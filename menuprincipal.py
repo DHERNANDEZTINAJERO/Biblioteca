@@ -1,0 +1,119 @@
+import tkinter as tk
+from PIL import Image, ImageTk
+import subprocess
+import sys
+
+
+def abrir_menu_principal(nombre_usuario):
+
+    ventana = tk.Tk()
+    ventana.title("QuadraLib - Sistema de Gestion de Biblioteca")
+    ventana.geometry("800x550")
+    ventana.resizable(False, False)
+    ventana.configure(bg="#f0f4f8")
+
+    # ── Barra superior ──────────────────────────────────────────────
+    barra_top = tk.Frame(ventana, bg="#1a3c5e", height=60)
+    barra_top.pack(fill="x")
+    barra_top.pack_propagate(False)
+
+    tk.Label(
+        barra_top,
+        text="QuadraLib - Sistema de Gestion de Biblioteca",
+        font=("Arial", 15, "bold"),
+        bg="#1a3c5e", fg="white"
+    ).pack(side="left", padx=20, pady=15)
+
+    tk.Label(
+        barra_top,
+        text=f"Usuario: {nombre_usuario}",
+        font=("Arial", 11),
+        bg="#1a3c5e", fg="#a8d8f0"
+    ).pack(side="right", padx=20)
+
+    # ── Cuerpo ──────────────────────────────────────────────────────
+    cuerpo = tk.Frame(ventana, bg="#f0f4f8")
+    cuerpo.pack(fill="both", expand=True, padx=20, pady=20)
+
+    # Panel izquierdo con imagen
+    frame_img = tk.Frame(cuerpo, bg="white", bd=1, relief="solid")
+    frame_img.pack(side="left", fill="y", padx=(0, 15))
+
+    try:
+        img = Image.open("biblioteca.png")
+        img = img.resize((260, 380))
+        foto = ImageTk.PhotoImage(img)
+        lbl_img = tk.Label(frame_img, image=foto, bg="white")
+        lbl_img.image = foto  # Guardar referencia para evitar garbage collection
+        lbl_img.pack(padx=10, pady=10)
+    except Exception:
+        tk.Label(
+            frame_img,
+            text="Imagen no encontrada",
+            bg="white", fg="gray",
+            width=28, height=20
+        ).pack(padx=10, pady=10)
+
+    # Panel derecho con botones
+    panel = tk.Frame(cuerpo, bg="#f0f4f8")
+    panel.pack(side="left", fill="both", expand=True)
+
+    tk.Label(
+        panel,
+        text="Menu Principal",
+        font=("Arial", 14, "bold"),
+        bg="#f0f4f8", fg="#1a3c5e"
+    ).pack(pady=(0, 20))
+
+    # ── Funciones de navegación ─────────────────────────────────────
+    def abrir_empleados():
+        from empleados import ventana_empleados
+        ventana_empleados()
+
+    def abrir_alumnos():
+        from alumnos import ventana_alumnos
+        ventana_alumnos()
+
+    def cerrar_sesion():
+        from tkinter import messagebox
+        if messagebox.askokcancel("Cerrar Sesion", "¿Seguro que deseas cerrar sesión?"):
+            ventana.destroy()
+            subprocess.Popen([sys.executable, "login.py"])
+
+    # ── Botones del menú ────────────────────────────────────────────
+    opciones = [
+        ("Gestionar Libros",     "#2980b9", lambda: None),
+        ("Gestionar Empleados",  "#27ae60", abrir_empleados),
+        ("Gestionar Alumnos",    "#d8d514", abrir_alumnos),
+        ("Gestionar Prestamos",  "#8e44ad", lambda: None),
+        ("Reportes",             "#e67e22", lambda: None),
+        ("Cerrar Sesion",        "#c0392b", cerrar_sesion),
+    ]
+
+    for texto, color, cmd in opciones:
+        tk.Button(
+            panel,
+            text=texto,
+            command=cmd,
+            font=("Arial", 12),
+            bg=color, fg="white",
+            width=28, pady=8,
+            relief="flat",
+            cursor="hand2"
+        ).pack(pady=6)
+
+    # ── Barra de estado inferior ────────────────────────────────────
+    barra_est = tk.Frame(ventana, bg="#1a3c5e", height=28)
+    barra_est.pack(fill="x", side="bottom")
+
+    tk.Label(
+        barra_est,
+        text=f"  Sesion iniciada como: {nombre_usuario}  |  QuadraLib v1.0",
+        font=("Arial", 9),
+        bg="#1a3c5e", fg="#a8d8f0"
+    ).pack(side="left", pady=4)
+
+    ventana.mainloop()
+
+# NOTA: La línea abrir_menu_principal("administrador") fue ELIMINADA
+# para que el menú solo se abra cuando login.py lo llame correctamente.
