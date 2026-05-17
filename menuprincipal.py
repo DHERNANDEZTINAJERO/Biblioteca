@@ -44,7 +44,7 @@ def abrir_menu_principal(nombre_usuario):
         img = img.resize((260, 380))
         foto = ImageTk.PhotoImage(img)
         lbl_img = tk.Label(frame_img, image=foto, bg="white")
-        lbl_img.image = foto  # Guardar referencia para evitar garbage collection
+        lbl_img.image = foto
         lbl_img.pack(padx=10, pady=10)
     except Exception:
         tk.Label(
@@ -66,6 +66,10 @@ def abrir_menu_principal(nombre_usuario):
     ).pack(pady=(0, 20))
 
     # ── Funciones de navegación ─────────────────────────────────────
+    def abrir_libros():
+        from libros import ventana_libros
+        ventana_libros()
+
     def abrir_empleados():
         from empleados import ventana_empleados
         ventana_empleados()
@@ -73,6 +77,10 @@ def abrir_menu_principal(nombre_usuario):
     def abrir_alumnos():
         from alumnos import ventana_alumnos
         ventana_alumnos()
+
+    def abrir_profesores():
+        from profesores import ventana_profesores
+        ventana_profesores()
 
     def cerrar_sesion():
         from tkinter import messagebox
@@ -82,12 +90,13 @@ def abrir_menu_principal(nombre_usuario):
 
     # ── Botones del menú ────────────────────────────────────────────
     opciones = [
-        ("Gestionar Libros",     "#2980b9", lambda: None),
-        ("Gestionar Empleados",  "#27ae60", abrir_empleados),
-        ("Gestionar Alumnos",    "#d8d514", abrir_alumnos),
-        ("Gestionar Prestamos",  "#8e44ad", lambda: None),
-        ("Reportes",             "#e67e22", lambda: None),
-        ("Cerrar Sesion",        "#c0392b", cerrar_sesion),
+        ("Gestionar Libros",      "#2980b9", abrir_libros),
+        ("Gestionar Empleados",   "#27ae60", abrir_empleados),
+        ("Gestionar Alumnos",     "#d8d514", abrir_alumnos),
+        ("Gestionar Profesores",  "#1abc9c", abrir_profesores),
+        ("Gestionar Prestamos",   "#8e44ad", lambda: None),
+        ("Reportes",              "#e67e22", lambda: None),
+        ("Cerrar Sesion",         "#c0392b", cerrar_sesion),
     ]
 
     for texto, color, cmd in opciones:
@@ -114,6 +123,3 @@ def abrir_menu_principal(nombre_usuario):
     ).pack(side="left", pady=4)
 
     ventana.mainloop()
-
-# NOTA: La línea abrir_menu_principal("administrador") fue ELIMINADA
-# para que el menú solo se abra cuando login.py lo llame correctamente.
