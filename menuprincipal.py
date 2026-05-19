@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 
-def abrir_menu_principal(nombre_usuario):
+def abrir_menu_principal(nombre_usuario, es_admin=False):
 
     ventana = tk.Tk()
     ventana.title("QuadraLib - Sistema de Gestion de Biblioteca")
@@ -35,7 +35,6 @@ def abrir_menu_principal(nombre_usuario):
     cuerpo = tk.Frame(ventana, bg="#f0f4f8")
     cuerpo.pack(fill="both", expand=True, padx=20, pady=20)
 
-    # Panel izquierdo con imagen
     frame_img = tk.Frame(cuerpo, bg="white", bd=1, relief="solid")
     frame_img.pack(side="left", fill="y", padx=(0, 15))
 
@@ -54,7 +53,6 @@ def abrir_menu_principal(nombre_usuario):
             width=28, height=20
         ).pack(padx=10, pady=10)
 
-    # Panel derecho con botones
     panel = tk.Frame(cuerpo, bg="#f0f4f8")
     panel.pack(side="left", fill="both", expand=True)
 
@@ -68,19 +66,23 @@ def abrir_menu_principal(nombre_usuario):
     # ── Funciones de navegación ─────────────────────────────────────
     def abrir_libros():
         from libros import ventana_libros
-        ventana_libros()
+        ventana_libros(nombre_usuario)
 
     def abrir_empleados():
         from empleados import ventana_empleados
-        ventana_empleados()
+        ventana_empleados(nombre_usuario)
 
     def abrir_alumnos():
         from alumnos import ventana_alumnos
-        ventana_alumnos()
+        ventana_alumnos(nombre_usuario)
 
     def abrir_profesores():
         from profesores import ventana_profesores
-        ventana_profesores()
+        ventana_profesores(nombre_usuario)
+
+    def abrir_prestamos():
+        from prestamos import ventana_prestamos
+        ventana_prestamos(nombre_usuario)
 
     def cerrar_sesion():
         from tkinter import messagebox
@@ -88,16 +90,20 @@ def abrir_menu_principal(nombre_usuario):
             ventana.destroy()
             subprocess.Popen([sys.executable, "login.py"])
 
-    # ── Botones del menú ────────────────────────────────────────────
-    opciones = [
-        ("Gestionar Libros",      "#2980b9", abrir_libros),
-        ("Gestionar Empleados",   "#27ae60", abrir_empleados),
-        ("Gestionar Alumnos",     "#d8d514", abrir_alumnos),
-        ("Gestionar Profesores",  "#1abc9c", abrir_profesores),
-        ("Gestionar Prestamos",   "#8e44ad", lambda: None),
-        ("Reportes",              "#e67e22", lambda: None),
-        ("Cerrar Sesion",         "#c0392b", cerrar_sesion),
-    ]
+    # ── Botones según rol ────────────────────────────────────────────
+    if es_admin:
+        opciones = [
+            ("Gestionar Empleados",   "#27ae60", abrir_empleados),
+            ("Gestionar Alumnos",     "#d8d514", abrir_alumnos),
+            ("Gestionar Profesores",  "#1abc9c", abrir_profesores),
+            ("Cerrar Sesion",         "#c0392b", cerrar_sesion),
+        ]
+    else:
+        opciones = [
+            ("Gestionar Libros",      "#2980b9", abrir_libros),
+            ("Gestionar Prestamos",   "#8e44ad", abrir_prestamos),
+            ("Cerrar Sesion",         "#c0392b", cerrar_sesion),
+        ]
 
     for texto, color, cmd in opciones:
         tk.Button(

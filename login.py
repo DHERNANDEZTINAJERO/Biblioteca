@@ -39,13 +39,11 @@ def iniciar_sesion():
         return
 
     if verificar_credenciales(usuario, contrasena):
-        # Mensaje de bienvenida dentro de la misma ventana
         lbl_bienvenida.config(
             text=f"✅ ¡Bienvenido, {usuario}!",
             fg="#27ae60"
         )
         btn_ingresar.config(state="disabled")
-        # Espera 1.2 segundos y luego abre el menú principal real
         ventana.after(1200, lambda: abrir_menu(usuario))
     else:
         lbl_bienvenida.config(
@@ -56,9 +54,10 @@ def iniciar_sesion():
 
 def abrir_menu(usuario):
     ventana.destroy()
-    # Importa y llama al menú principal REAL desde menuprincipal.py
     from menuprincipal import abrir_menu_principal
-    abrir_menu_principal(usuario)
+    # Si es administrador abre menú admin, si no menú empleado
+    es_admin = (usuario.lower() == "administrador")
+    abrir_menu_principal(usuario, es_admin)
 
 
 # ── Ventana principal ────────────────────────────────────────────
@@ -95,7 +94,6 @@ tk.Label(
 entry_contrasena = tk.Entry(frame, font=("Arial", 11), width=30, show="*")
 entry_contrasena.pack(padx=15, pady=(0, 15))
 
-# Permitir login con Enter
 ventana.bind("<Return>", lambda event: iniciar_sesion())
 
 btn_ingresar = tk.Button(
@@ -109,7 +107,6 @@ btn_ingresar = tk.Button(
 )
 btn_ingresar.pack(pady=15)
 
-# Label para mensajes dentro de la misma ventana (bienvenida o error)
 lbl_bienvenida = tk.Label(
     ventana, text="",
     font=("Arial", 10, "bold"),
