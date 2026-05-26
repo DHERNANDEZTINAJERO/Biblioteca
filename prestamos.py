@@ -291,7 +291,7 @@ def ventana_devolver(nombre_usuario):
             fecha_dev    = datetime.strptime(fecha_dev_str, "%d-%m-%Y").date()
             fecha_limite = datetime.strptime(prestamo_actual["fecha_limite"], "%Y-%m-%d").date()
             dias_retraso = (fecha_dev - fecha_limite).days
-            multa   = max(dias_retraso, 0) * 100
+            multa   = max(dias_retraso, 0) * 10
             estatus = "Devuelto con multa" if dias_retraso > 0 else "Devuelto"
 
             conn = conectar()
